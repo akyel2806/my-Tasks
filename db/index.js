@@ -7,4 +7,4 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
-export const db = drizzle(pool, {schema});
+export const db = drizzle(pool, { schema });
