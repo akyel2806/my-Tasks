@@ -8,8 +8,11 @@ import jwt from 'jsonwebtoken';
 import { setCookie } from 'hono/cookie';
 import { getCookie } from 'hono/cookie';
 import { json } from 'drizzle-orm/gel-core';
+import { serveStatic } from '@hono/node-server/serve-static';
  
 const app = new Hono();
+
+app.use('/*', serveStatic({ root: './public' }));
 
 app.get('/', (c) => {
   return c.html('<h1>Tim Pengembang</h1><h2>Muhammad Fathi Akyel Malino</h2>');
@@ -92,6 +95,14 @@ app.get('/api/todos', async (c) => {
 });
 
  
-const port = 3000;
-console.log(`🚀 Server is running on http://localhost:${port}`);
-serve({ fetch: app.fetch, port });
+if (process.env.VERCEL) {
+  console.log('Running on Vercel');
+  globalThis.app = app;
+} else {
+  const port = 3000;
+  console.log(`✅ Server is running on http://localhost:${port}`);
+  serve({
+    fetch: app.fetch,
+    port,
+  });
+}
